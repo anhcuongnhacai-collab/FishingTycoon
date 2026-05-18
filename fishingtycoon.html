@@ -565,14 +565,14 @@
                         <div>
                             <p class="text-sm text-gray-500 font-bold mb-1 uppercase">MÃ GIỚI THIỆU CỦA BẠN</p>
                             <div class="flex justify-center items-stretch gap-2">
-                                <p id="ref-code-display" class="flex-1 text-3xl text-blue-600 font-bold bg-blue-50 border-2 border-blue-200 py-2">FISH8BIT</p>
+                                <p id="ref-code-display" class="flex-1 text-3xl text-blue-600 font-bold bg-blue-50 border-2 border-blue-200 py-2">MÃ TẢI CƠ SỞ</p>
                                 <button id="copy-code-btn" class="pixel-btn btn-blue px-3 flex items-center justify-center" title="Copy Mã"><i data-lucide="copy" class="w-6 h-6"></i></button>
                             </div>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500 font-bold mb-1 uppercase">LINK GIỚI THIỆU</p>
                             <div class="flex justify-center items-stretch gap-2">
-                                <input type="text" id="ref-link-display" readonly class="flex-1 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 py-2 px-3 pixel-input truncate outline-none" value="https://fishing-tycoon.com/?ref=FISH8BIT">
+                                <input type="text" id="ref-link-display" readonly class="flex-1 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 py-2 px-3 pixel-input truncate outline-none" value="">
                                 <button id="copy-link-btn" class="pixel-btn btn-green px-3 flex items-center justify-center" title="Copy Link"><i data-lucide="copy" class="w-6 h-6"></i></button>
                             </div>
                         </div>
@@ -631,7 +631,7 @@
                         <div id="deposit-qr-screen" class="hidden p-4 pixel-panel space-y-3 text-center">
                             <h3 class="text-lg text-green-700 font-bold">QUÉT MÃ QR</h3>
                             <div class="bg-white p-2 w-52 h-52 mx-auto flex items-center justify-center border-4 border-black">
-                                <img id="deposit-qr-img" src="qr-bank.jpg" alt="QR Code" class="max-w-full max-h-full image-rendering-pixelated">
+                                <img id="deposit-qr-img" src="qr-bank.jpg" alt="qr-bank.jpg" class="max-w-full max-h-full image-rendering-pixelated">
                             </div>
                             <div class="text-left text-base bg-white p-3 border-4 border-black space-y-1.5 font-bold">
                                 <p>NH: <strong class="text-green-600">TCB</strong></p>
@@ -736,7 +736,9 @@
             bankInfo: null,
             transactions: [],
             fishingHistory: [],
-            isFishing: false
+            isFishing: false,
+            referralCode: '',
+            referredBy: ''
         };
 
         lucide.createIcons();
@@ -791,6 +793,16 @@
             return `${now.getHours()}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate()}/${now.getMonth()+1}`;
         }
 
+        // Hàm hỗ trợ sinh mã giới thiệu ngẫu nhiên
+        function generateRandomRefCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'FT';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
         // --- ĐỒNG BỘ TRỰC TIẾP LÊN FIREBASE TRÊN KHUNG NHÌN CANVAS ---
         async function saveUserState() {
             if (!appState.userPhone) return;
@@ -806,7 +818,9 @@
                 friendsCount: appState.friendsCount,
                 bankInfo: appState.bankInfo || null,
                 transactions: appState.transactions || [],
-                fishingHistory: appState.fishingHistory || []
+                fishingHistory: appState.fishingHistory || [],
+                referralCode: appState.referralCode || "",
+                referredBy: appState.referredBy || ""
             };
 
             try {
@@ -850,9 +864,14 @@
                     if(pass !== confPass) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Mật khẩu không khớp!", true); }
                     if(userExists) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("SĐT đã tồn tại!", true); }
                     
+                    const newReferralCode = generateRandomRefCode();
+                    const referralInput = document.getElementById('referral-input').value.trim();
+
                     userData = {
                         password: pass, balance: 20000, currentRod: 0, ownedRods: [0],
-                        rodUsages: {}, commission: 0, friendsCount: 0, transactions: [], fishingHistory: []
+                        rodUsages: {}, commission: 0, friendsCount: 0, transactions: [], fishingHistory: [],
+                        referralCode: newReferralCode,
+                        referredBy: referralInput
                     };
                     await set(ref(db, 'users/' + fbKey), userData);
                     loginUser(formattedPhone, userData);
@@ -860,6 +879,13 @@
                 } else {
                     if(!userExists) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Tài khoản không tồn tại!", true); }
                     if(userData.password !== pass) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Sai mật khẩu!", true); }
+                    
+                    // Tạo mã giới thiệu nếu tài khoản cũ chưa có
+                    if (!userData.referralCode) {
+                        userData.referralCode = generateRandomRefCode();
+                        await set(ref(db, `users/${fbKey}/referralCode`), userData.referralCode);
+                    }
+                    
                     loginUser(formattedPhone, userData);
                     showNotif("Đăng nhập thành công!");
                 }
@@ -876,6 +902,9 @@
             if(!appState.transactions) appState.transactions = [];
             if(!appState.fishingHistory) appState.fishingHistory = [];
             if(!appState.rodUsages) appState.rodUsages = {}; 
+            if(!appState.referralCode) {
+                appState.referralCode = generateRandomRefCode();
+            }
             
             localStorage.setItem('fishing_tycoon_session', phone);
             
@@ -919,7 +948,13 @@
                 try {
                     const snapshot = await get(child(ref(db), `users/${fbKey}`));
                     if (snapshot.exists()) {
-                        loginUser(sessionPhone, snapshot.val());
+                        let userData = snapshot.val();
+                        // Tạo mã giới thiệu nếu tài khoản cũ chưa có
+                        if (!userData.referralCode) {
+                            userData.referralCode = generateRandomRefCode();
+                            await set(ref(db, `users/${fbKey}/referralCode`), userData.referralCode);
+                        }
+                        loginUser(sessionPhone, userData);
                     } else {
                         localStorage.removeItem('fishing_tycoon_session');
                     }
@@ -960,7 +995,7 @@
             renderShop();
             renderFishingHistory();
 
-            const refCode = appState.userPhone.replace('+84', 'VN');
+            const refCode = appState.referralCode || generateRandomRefCode();
             document.getElementById('ref-code-display').innerText = refCode;
             document.getElementById('ref-link-display').value = window.location.origin + window.location.pathname + "?ref=" + refCode;
             document.getElementById('commission-display').innerText = formatMoney(appState.commission);
@@ -1241,8 +1276,9 @@
             if(isNaN(amt) || amt < 50000) return showNotif("Tối thiểu 50.000đ!", true);
             const phoneStr = appState.userPhone.replace('+84', '0');
             const content = `NAP ${phoneStr}`;
-            const qrUrl = `https://img.vietqr.io/image/MB-999920268888-compact2.png?amount=${amt}&addInfo=${encodeURIComponent(content)}&accountName=NGUYEN%20VAN%20A`;
-            document.getElementById('deposit-qr-img').src = qrUrl;
+            
+            // Giữ nguyên ảnh mã QR tĩnh qr-bank.jpg theo yêu cầu của bạn, không ghi đè URL động chứa NGUYEN VAN A nữa.
+            
             document.getElementById('qr-amount-txt').innerText = formatMoney(amt);
             document.getElementById('qr-content-txt').innerText = content;
             document.getElementById('deposit-form').classList.add('hidden');

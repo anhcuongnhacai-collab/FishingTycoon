@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Fishing Tycoon</title>
-    <script> // Chặn chuột phải
-        document.addEventListener('contextmenu', event => event.preventDefault());
+    <script id="anti-debug-script">
+        // Chặn chuột phải mặc định
+        document.addEventListener('contextmenu', event => {
+            if (window.allowDebug) return;
+            event.preventDefault();
+        });
 
         // Chặn F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
         document.onkeydown = function(e) {
+            if (window.allowDebug) return true;
             if (e.keyCode == 123) return false; // F12
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
@@ -54,7 +59,7 @@
     <!-- Màn hình Đăng nhập Admin -->
     <div id="admin-login-screen" class="fixed inset-0 z-[100] bg-[#0B0F1A] flex flex-col justify-center items-center transition-opacity duration-300">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-8 border border-yellow-500/20 shadow-[0_0_50px_rgba(245,158,11,0.1)]">
-            <div class="text-center mb-8">
+            <div class="text-center mb-6">
                 <div class="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 p-[2px] mx-auto mb-4">
                     <div class="w-full h-full bg-[#161B2D] rounded-full flex items-center justify-center text-2xl text-yellow-500"><i class="fa-solid fa-fish-fins"></i></div>
                 </div>
@@ -67,14 +72,25 @@
                     <p class="text-xs text-gray-400 font-bold mb-2 uppercase">Tài khoản</p>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                        <input type="text" id="admin-username" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin">
+                        <input type="text" id="admin-username" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin" value="admin">
                     </div>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 font-bold mb-2 uppercase">Mật khẩu</p>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                        <input type="password" id="admin-password" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin123">
+                        <input type="password" id="admin-password" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin123" value="admin123">
+                    </div>
+                </div>
+
+                <!-- Mục cấu hình nhanh Firebase URL ngay tại Login -->
+                <div class="pt-2 border-t border-gray-800/60">
+                    <button onclick="window.toggleConfigSection()" class="text-xs text-yellow-500/70 hover:text-yellow-400 flex items-center gap-1.5 focus:outline-none">
+                        <i class="fa-solid fa-gear"></i> Cấu hình Firebase URL (Tuỳ chọn)
+                    </button>
+                    <div id="config-url-section" class="hidden mt-2 animate-fade">
+                        <p class="text-[10px] text-gray-400 mb-1">Database URL (Bắt đầu với https://):</p>
+                        <input type="text" id="admin-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-lg py-2 px-3 text-xs text-gray-300 focus:border-yellow-500 outline-none" placeholder="https://fishing-tycoon-default-rtdb.firebaseio.com">
                     </div>
                 </div>
             </div>
@@ -123,10 +139,13 @@
                 <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 p-[2px]">
                     <div class="w-full h-full bg-[#161B2D] rounded-full flex items-center justify-center"><i class="fa-solid fa-user-tie"></i></div>
                 </div>
-                <div class="flex-1">
+                <div class="flex-1 col">
                     <p class="text-sm font-bold">Admin</p>
-                    <p class="text-[10px] text-green-400"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> LIVE - Firebase</p>
+                    <p class="text-[10px] text-green-400" id="db-status-badge"><i class="fa-solid fa-circle text-[8px] animate-pulse text-gray-500"></i> OFFLINE</p>
                 </div>
+                <button onclick="window.showConfigPrompt()" class="text-gray-500 hover:text-yellow-400 transition-colors" title="Thay đổi Database URL">
+                    <i class="fa-solid fa-link text-md"></i>
+                </button>
                 <button onclick="window.handleAdminLogout()" class="text-gray-500 hover:text-red-500 transition-colors" title="Đăng xuất">
                     <i class="fa-solid fa-right-from-bracket text-lg"></i>
                 </button>
@@ -170,7 +189,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-800/50" id="table-body">
-                                <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i><br>Đang tải dữ liệu...</td></tr>
+                                <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i><br>Đang chờ đăng nhập...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -228,6 +247,29 @@
         </div>
     </main>
 
+    <!-- Nút Bật tắt chế độ Debug/F12 -->
+    <div class="fixed bottom-2 right-2 z-50 text-[10px]">
+        <button id="toggle-debug-btn" onclick="window.toggleDebugMode()" class="bg-gray-800 hover:bg-gray-700 text-gray-400 py-1 px-2 rounded border border-gray-700 font-mono">
+            Chặn DevTools: ON
+        </button>
+    </div>
+
+    <!-- Modal Cấu hình URL nhanh (Popup) -->
+    <div id="url-config-modal" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex-col justify-center items-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-gray-700 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-yellow-500"><i class="fa-solid fa-gears mr-2"></i>CẤU HÌNH FIREBASE URL</h3>
+                <i class="fa-solid fa-xmark text-lg text-gray-500 cursor-pointer" onclick="window.closeConfigModal()"></i>
+            </div>
+            <p class="text-xs text-gray-400 mb-4">Hãy nhập đúng địa chỉ Realtime Database URL của bạn để hệ thống đồng bộ thời gian thực.</p>
+            <input type="text" id="popup-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:border-yellow-500 outline-none mb-4" placeholder="https://xxxxxx-default-rtdb.firebaseio.com">
+            <div class="flex gap-3">
+                <button onclick="window.closeConfigModal()" class="flex-1 bg-gray-800 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-gray-700 transition-colors">Hủy</button>
+                <button onclick="window.saveConfigUrl()" class="flex-1 bg-yellow-500 text-gray-900 font-bold py-2.5 rounded-lg text-xs hover:bg-yellow-400 transition-colors">Lưu & Tải lại</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Xác nhận hành động (Giao dịch) -->
     <div id="action-modal" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex-col justify-center items-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-gray-700 shadow-2xl animate-fade">
@@ -257,24 +299,97 @@
     <!-- Toast Notification -->
     <div id="toast" class="fixed top-5 right-5 z-[100] px-6 py-4 rounded-xl glass-panel border-l-4 border-yellow-500 text-white text-sm font-bold opacity-0 transition-all pointer-events-none shadow-2xl transform translate-x-10">---</div>
 
-    <!-- TÍCH HỢP FIREBASE THỜI GIAN THỰC Ở ĐÂY -->
+    <!-- SỬ DỤNG FIREBASE SDK KHÔNG PHỤ THUỘC FILE NGOÀI -->
     <script type="module">
-        import { db, ref, onValue, set, get, child } from './firebase-config.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Data Types from App
+        // Tải thiết lập database URL đã lưu trong localStorage hoặc dùng mặc định
+        const savedDatabaseUrl = localStorage.getItem('fishing_tycoon_db_url') || "https://fishing-tycoon-default-rtdb.firebaseio.com";
+        
+        // Cập nhật giá trị vào Input hiển thị
+        document.getElementById('admin-database-url').value = savedDatabaseUrl;
+        document.getElementById('popup-database-url').value = savedDatabaseUrl;
+
+        const firebaseConfig = {
+            databaseURL: savedDatabaseUrl
+        };
+
+        // Khởi tạo Firebase
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            console.log("Firebase initialized dynamically with URL:", savedDatabaseUrl);
+        } catch (error) {
+            console.error("Firebase init error: ", error);
+        }
+
+        // Tải thiết lập Debug
+        window.allowDebug = false;
+        window.toggleDebugMode = () => {
+            window.allowDebug = !window.allowDebug;
+            const btn = document.getElementById('toggle-debug-btn');
+            if(window.allowDebug) {
+                btn.innerText = "Chặn DevTools: OFF";
+                btn.className = "bg-green-800/40 hover:bg-green-700 text-green-400 py-1 px-2 rounded border border-green-600 font-mono";
+                showToast("Đã mở khóa DevTools (F12)!");
+            } else {
+                btn.innerText = "Chặn DevTools: ON";
+                btn.className = "bg-gray-800 hover:bg-gray-700 text-gray-400 py-1 px-2 rounded border border-gray-700 font-mono";
+                showToast("Đã kích hoạt lại chế độ bảo mật!");
+            }
+        };
+
+        // Ẩn / hiện cấu hình nhanh tại màn login
+        window.toggleConfigSection = () => {
+            const el = document.getElementById('config-url-section');
+            if(el) el.classList.toggle('hidden');
+        };
+
+        // Popup quản lý cấu hình nhanh
+        window.showConfigPrompt = () => {
+            const modal = document.getElementById('url-config-modal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        };
+
+        window.closeConfigModal = () => {
+            const modal = document.getElementById('url-config-modal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.saveConfigUrl = () => {
+            const val = document.getElementById('popup-database-url').value.trim();
+            if(val && val.startsWith('https://')) {
+                localStorage.setItem('fishing_tycoon_db_url', val);
+                showToast("Đã lưu địa chỉ Database. Hệ thống tự khởi động lại...");
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showToast("Địa chỉ URL không hợp lệ (Phải bắt đầu với https://)!", false);
+            }
+        };
+
         const ROD_NAMES = ["Cần Gỗ", "Cần Tre", "Cần Carbon", "Cần Vàng Ròng", "Cần Kim Cương"];
         
         let allTransactions = [];
         let allUsers = [];
-        let rawDB = {}; // Lưu trữ state DB realtime
+        let rawDB = {}; 
         let currentFilterType = 'ALL';
         let currentFilterStatus = 'ALL';
+        let connectionSuccess = false; // Cờ kiểm tra kết nối Firebase
 
-        const formatVND = (n) => parseInt(n).toLocaleString('vi-VN') + ' đ';
+        const formatVND = (n) => parseInt(n || 0).toLocaleString('vi-VN') + ' đ';
 
         // Custom Toast
         const showToast = (msg, isSuccess = true) => {
             const t = document.getElementById('toast');
+            if(!t) return;
             t.innerText = msg; 
             t.style.borderColor = isSuccess ? '#10B981' : '#F59E0B';
             t.style.opacity = '1';
@@ -285,7 +400,7 @@
             }, 3000);
         };
 
-        // Gán functions vào window để gọi từ các sự kiện onclick trên HTML
+        // Gán functions vào window để tương thích với HTML onclick
         window.switchView = (view) => {
             ['transactions', 'users', 'add-money'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -307,10 +422,10 @@
 
             const filterSection = document.getElementById('tx-filter-section');
             if (view === 'transactions') {
-                filterSection.classList.remove('hidden');
+                if(filterSection) filterSection.classList.remove('hidden');
                 document.getElementById('page-title').innerText = "Quản Lý Giao Dịch";
             } else {
-                filterSection.classList.add('hidden');
+                if(filterSection) filterSection.classList.add('hidden');
                 if(view === 'users') document.getElementById('page-title').innerText = "Dữ liệu Người chơi";
                 if(view === 'add-money') document.getElementById('page-title').innerText = "Cộng / Trừ Tiền";
             }
@@ -319,13 +434,19 @@
         window.handleAdminLogin = () => {
             const u = document.getElementById('admin-username').value.trim();
             const p = document.getElementById('admin-password').value.trim();
+            const configUrl = document.getElementById('admin-database-url').value.trim();
+
             if (u === "admin" && p === "admin123") {
+                // Lưu lại Database URL nếu có cập nhật mới tại màn đăng nhập
+                if(configUrl) {
+                    localStorage.setItem('fishing_tycoon_db_url', configUrl);
+                }
                 localStorage.setItem('admin_logged_in', 'true');
                 document.getElementById('admin-login-screen').classList.add('hidden');
                 document.getElementById('admin-login-screen').classList.remove('flex');
                 showToast('Đăng nhập thành công!');
                 window.switchView('transactions');
-                initFirebaseListener(); // Khởi động lắng nghe
+                initFirebaseListener(); // Chạy lắng nghe dữ liệu
             } else {
                 showToast('Sai tài khoản hoặc mật khẩu!', false);
             }
@@ -336,13 +457,71 @@
             location.reload();
         };
 
-        // --- HÀM REALTIME FIREBASE ---
+        // Realtime Real Estate sync
         const initFirebaseListener = () => {
+            const badge = document.getElementById('db-status-badge');
+            if(!db) {
+                console.warn("Firebase Database is not configured, running in Demo Mode.");
+                badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-yellow-500"></i> DEMO MODE`;
+                loadMockData();
+                return;
+            }
+
+            badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-blue-500 animate-pulse"></i> ĐANG KẾT NỐI...`;
+
+            // BỘ ĐẾM THỜI GIAN GIỚI HẠN (6 GIÂY TIMEOUT):
+            // Nếu quá 6 giây vẫn chưa kết nối thành công, hệ thống tự động nhảy sang Demo Mode để giao diện không bị kẹt.
+            const connectionTimeout = setTimeout(() => {
+                if (!connectionSuccess) {
+                    console.warn("Firebase connection timeout. Falling back to Demo Mode.");
+                    badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-yellow-500"></i> CHẾ ĐỘ DEMO (KẾT NỐI CHẬM)`;
+                    showToast("Thời gian kết nối quá lâu! Tự động chuyển sang dữ liệu Demo dự phòng.", false);
+                    loadMockData();
+                }
+            }, 6000);
+
             const usersRef = ref(db, 'users');
             onValue(usersRef, (snapshot) => {
+                connectionSuccess = true;
+                clearTimeout(connectionTimeout); // Hủy bộ đếm thời gian khi kết nối thành công
                 rawDB = snapshot.val() || {};
+                badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-green-400 animate-pulse"></i> LIVE - Firebase`;
                 processData(rawDB);
+            }, (error) => {
+                console.error("Firebase read error: ", error);
+                connectionSuccess = false;
+                clearTimeout(connectionTimeout);
+                badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-red-500"></i> LỖI KẾT NỐI`;
+                showToast("Lỗi bảo mật hoặc lỗi liên kết Firebase!", false);
+                loadMockData(); // Tải Mock Data dự phòng để có giao diện hiển thị
             });
+        };
+
+        // Nạp data demo nếu chưa cấu hình DB hoặc kết nối thất bại
+        const loadMockData = () => {
+            const demoDB = {
+                "84912345678": {
+                    balance: 1500000,
+                    currentRod: 2,
+                    friendsCount: 5,
+                    commission: 120000,
+                    transactions: [
+                        { id: 1680000000000, type: "NẠP", amount: 500000, status: "Chờ xử lý", date: "10:30 - 15/05" },
+                        { id: 1680000001000, type: "RÚT", amount: 200000, status: "Chờ xử lý", date: "11:15 - 15/05" }
+                    ],
+                    bankInfo: { name: "MB Bank", acc: "9999123456", user: "NGUYEN VAN A" }
+                },
+                "84988888888": {
+                    balance: 4500000,
+                    currentRod: 4,
+                    friendsCount: 12,
+                    commission: 480000,
+                    transactions: [
+                        { id: 1680000002000, type: "NẠP", amount: 1000000, status: "Thành công", date: "09:00 - 14/05" }
+                    ]
+                }
+            };
+            processData(demoDB);
         };
 
         const processData = (dbObj) => {
@@ -353,7 +532,6 @@
 
             Object.keys(dbObj).forEach(phoneKey => {
                 const user = dbObj[phoneKey];
-                // Tái tạo định dạng có +84 để hiển thị
                 const displayPhone = phoneKey.startsWith('84') ? '+' + phoneKey : phoneKey; 
                 tempUsers.push({ phone: displayPhone, fbKey: phoneKey, ...user });
 
@@ -374,8 +552,10 @@
                 }
             });
 
-            document.getElementById('count-dep-pending').innerText = depPending;
-            document.getElementById('count-wd-pending').innerText = wdPending;
+            const depBadge = document.getElementById('count-dep-pending');
+            const wdBadge = document.getElementById('count-wd-pending');
+            if (depBadge) depBadge.innerText = depPending;
+            if (wdBadge) wdBadge.innerText = wdPending;
 
             // Sắp xếp giảm dần theo thời gian (ID)
             allTransactions = tempTxs.sort((a, b) => b.id - a.id);
@@ -388,13 +568,13 @@
         // Render Users
         const renderUsersTable = () => {
             const tbody = document.getElementById('users-table-body');
+            if (!tbody) return;
             if (allUsers.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-gray-500">Chưa có người chơi nào.</td></tr>`;
                 return;
             }
             tbody.innerHTML = allUsers.map(user => {
                 const rodName = ROD_NAMES[user.currentRod] || "Chưa rõ";
-                // Tính số cá đã câu (dựa vào history)
                 const fishCount = user.fishingHistory ? user.fishingHistory.length : 0;
                 return `
                     <tr class="hover:bg-gray-800/30 transition-colors">
@@ -402,7 +582,7 @@
                         <td class="px-6 py-4 font-black text-[#4cd964]">${formatVND(user.balance)}</td>
                         <td class="px-6 py-4 text-[#00e5ff] font-bold">${rodName}</td>
                         <td class="px-6 py-4 text-gray-300"><i class="fa-solid fa-fish text-gray-500"></i> ${fishCount} lượt</td>
-                        <td class="px-6 py-4 text-gray-300"><i class="fa-solid fa-users text-gray-500"></i> ${user.friendsCount} F1</td>
+                        <td class="px-6 py-4 text-gray-300"><i class="fa-solid fa-users text-gray-500"></i> ${user.friendsCount || 0} F1</td>
                         <td class="px-6 py-4 text-yellow-500 font-bold">${formatVND(user.commission)}</td>
                     </tr>
                 `;
@@ -414,7 +594,8 @@
             currentFilterType = type;
             currentFilterStatus = status;
 
-            if(document.getElementById('view-transactions').classList.contains('hidden')) {
+            const transactionsView = document.getElementById('view-transactions');
+            if(transactionsView && transactionsView.classList.contains('hidden')) {
                 window.switchView('transactions');
             }
 
@@ -440,6 +621,7 @@
 
         const renderTable = () => {
             const tbody = document.getElementById('table-body');
+            if(!tbody) return;
             const filteredData = allTransactions.filter(tx => {
                 const matchType = currentFilterType === 'ALL' || tx.type === currentFilterType;
                 const matchStatus = currentFilterStatus === 'ALL' || tx.status === currentFilterStatus;
@@ -468,7 +650,7 @@
                 let bankHtml = '<span class="text-gray-600 italic text-xs">-</span>';
                 if (!isDep && !isSystem && tx.bankInfo) {
                     bankHtml = `
-                        <div class="text-xs">
+                        <div class="text-xs text-left">
                             <p class="font-bold text-white">${tx.bankInfo.name}</p>
                             <p class="text-gray-400">${tx.bankInfo.acc}</p>
                             <p class="text-gray-500">${tx.bankInfo.user}</p>
@@ -546,13 +728,18 @@
                 btn.className = "flex-1 font-bold py-3 rounded-xl transition-colors bg-red-500 text-white hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)]";
                 btn.innerText = "Xác nhận Từ chối";
             }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         };
 
         window.closeModal = () => {
-            document.getElementById('action-modal').classList.add('hidden');
-            document.getElementById('action-modal').classList.remove('flex');
+            const modal = document.getElementById('action-modal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
             currentTarget = null;
         };
 
@@ -563,26 +750,31 @@
             btn.innerText = "Đang xử lý...";
             btn.disabled = true;
 
+            if(!connectionSuccess) {
+                showToast("Chế độ Demo: Không lưu kết quả thực tế lên Firebase!", false);
+                window.closeModal();
+                btn.disabled = false;
+                return;
+            }
+
             try {
-                // Lấy snapshot user hiện tại để tránh xung đột
                 const userRef = ref(db, `users/${fbKey}`);
                 const snapshot = await get(userRef);
                 
                 if(snapshot.exists()) {
                     let user = snapshot.val();
-                    let txIndex = user.transactions.findIndex(t => t.id === tx.id);
+                    let txIndex = user.transactions ? user.transactions.findIndex(t => t.id === tx.id) : -1;
                     
                     if(txIndex !== -1 && user.transactions[txIndex].status === 'Chờ xử lý') {
                         if (action === 'approve') {
                             user.transactions[txIndex].status = 'Thành công';
-                            if (tx.type === 'NẠP') user.balance += tx.amount;
+                            if (tx.type === 'NẠP') user.balance = (user.balance || 0) + tx.amount;
                             showToast(`Đã DUYỆT lệnh ${tx.type}`);
                         } else if (action === 'reject') {
                             user.transactions[txIndex].status = 'Thất bại';
-                            if (tx.type === 'RÚT') user.balance += tx.amount;
+                            if (tx.type === 'RÚT') user.balance = (user.balance || 0) + tx.amount;
                             showToast(`Đã TỪ CHỐI lệnh ${tx.type}`);
                         }
-                        // Ghi đè lại user
                         await set(userRef, user);
                     } else {
                         showToast("Lệnh đã được xử lý từ trước!", false);
@@ -608,6 +800,12 @@
             const btn = document.querySelector('#view-add-money button');
             btn.innerText = "ĐANG XỬ LÝ...";
             
+            if(!connectionSuccess) {
+                showToast("Chế độ Demo: Không lưu lên Firebase!", false);
+                btn.innerText = "THỰC HIỆN NGAY";
+                return;
+            }
+
             try {
                 const userRef = ref(db, `users/${fbKey}`);
                 const snapshot = await get(userRef);
@@ -616,7 +814,7 @@
                     showToast('Không tìm thấy tài khoản này!', false);
                 } else {
                     let user = snapshot.val();
-                    user.balance += amount;
+                    user.balance = (user.balance || 0) + amount;
                     if(!user.transactions) user.transactions = [];
                     user.transactions.push({
                         id: Date.now(),
@@ -643,13 +841,19 @@
         window.onload = () => {
             const isLogged = localStorage.getItem('admin_logged_in');
             if (isLogged === 'true') {
-                document.getElementById('admin-login-screen').classList.add('hidden');
-                document.getElementById('admin-login-screen').classList.remove('flex');
+                const loginScreen = document.getElementById('admin-login-screen');
+                if(loginScreen) {
+                    loginScreen.classList.add('hidden');
+                    loginScreen.classList.remove('flex');
+                }
                 window.switchView('transactions');
-                initFirebaseListener(); // Khởi tạo realtime db
+                initFirebaseListener(); 
             } else {
-                document.getElementById('admin-login-screen').classList.remove('hidden');
-                document.getElementById('admin-login-screen').classList.add('flex');
+                const loginScreen = document.getElementById('admin-login-screen');
+                if(loginScreen) {
+                    loginScreen.classList.remove('hidden');
+                    loginScreen.classList.add('flex');
+                }
             }
         };
     </script>

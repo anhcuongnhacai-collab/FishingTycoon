@@ -281,7 +281,7 @@
     </svg>
 
     <!-- Notification Toast -->
-    <div id="notif-container" class="fixed top-20 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none transition-all duration-100 transform -translate-y-20 opacity-0 hidden">
+    <div id="notif-container" class="fixed top-20 left-0 right-0 z-[999] flex justify-center px-4 pointer-events-none transition-all duration-100 transform -translate-y-20 opacity-0 hidden">
         <div id="notif-msg" class="px-4 py-3 text-xl text-white font-bold shadow-[6px_6px_0_0_rgba(0,0,0,1)] text-center pointer-events-auto max-w-sm border-4 border-black bg-green-500">
             Thông báo
         </div>
@@ -292,7 +292,7 @@
         <div class="w-full max-w-md p-6 pixel-border-white relative bg-white/95 backdrop-blur-sm">
             <div class="text-center mb-6">
                 <div class="flex justify-center mb-4">
-                    <img src="logofig.jpg" alt="Shark Fishing Logo" class="mx-auto w-32 h-32 object-cover image-rendering-pixelated border-4 border-black shadow-[4px_4px_0_0_#000] bg-white">
+                    <img src="logofig.jpg" alt="Shark Fishing Logo" onerror="this.style.display='none'" class="mx-auto w-32 h-32 object-cover image-rendering-pixelated border-4 border-black shadow-[4px_4px_0_0_#000] bg-white">
                 </div>
                 
                 <h1 class="text-4xl font-extrabold text-black tracking-wider mb-1" style="text-shadow: 2px 2px 0px #facc15;">
@@ -383,8 +383,8 @@
                         <h3 id="current-rod-name" class="text-xl text-blue-600 font-bold">Cần Gỗ</h3>
                     </div>
                     <div class="text-right">
-                        <span class="text-sm text-gray-600 font-bold uppercase">LƯỢT (RIÊNG CẦN NÀY):</span>
-                        <h3 id="fishing-limit-display" class="text-xl text-red-600 font-bold">0 / 3</h3>
+                        <span class="text-sm text-gray-600 font-bold uppercase">LƯỢT SỬ DỤNG:</span>
+                        <h3 id="fishing-limit-display" class="text-xl text-red-600 font-bold">0 / 4</h3>
                     </div>
                 </div>
 
@@ -514,7 +514,7 @@
                         </div>
                         <div>
                             <p class="text-gray-600">Giới hạn:</p>
-                            <p id="rod-daily-limit" class="text-red-600 text-xl bg-gray-100 border-2 border-black p-1 text-center mt-1">0 lượt/ngày</p>
+                            <p id="rod-daily-limit" class="text-red-600 text-xl bg-gray-100 border-2 border-black p-1 text-center mt-1">0 lượt</p>
                         </div>
                     </div>
                 </div>
@@ -548,9 +548,9 @@
                     <div class="bg-yellow-200 border-4 border-black p-3">
                         <h3 class="text-xl text-black font-bold">HỆ THỐNG ĐẠI LÝ 8-BIT</h3>
                         <ul class="text-base text-gray-800 mt-2 space-y-1 list-disc list-inside font-bold">
-                            <li><span class="text-red-600">F1: 25%</span> thu nhập đi câu mỗi ngày!</li>
-                            <li><span class="text-red-600">F2: 13%</span> thu nhập đi câu mỗi ngày!</li>
-                            <li><span class="text-red-600">F3: 8%</span> thu nhập đi câu mỗi ngày!</li>
+                            <li><span class="text-red-600">F1: 25%</span> thu nhập đi câu mỗi ngày! (Chỉ áp dụng từ Cần Tre trở lên)</li>
+                            <li><span class="text-red-600">F2: 13%</span> thu nhập đi câu mỗi ngày! (Chỉ áp dụng từ Cần Tre trở lên)</li>
+                            <li><span class="text-red-600">F3: 8%</span> thu nhập đi câu mỗi ngày! (Chỉ áp dụng từ Cần Tre trở lên)</li>
                             <li>Nhận thưởng nóng khi F1 nâng cấp cần câu:</li>
                             <ul class="pl-5 list-circle">
                                 <li>Cần Tre: <span class="text-green-600">+25.000 đ</span></li>
@@ -619,6 +619,12 @@
                     <h2 class="text-2xl font-bold text-black uppercase">NẠP / RÚT TIỀN</h2>
                 </div>
 
+                <!-- Cảnh báo nâng cấp để rút tiền -->
+                <div id="withdrawal-restriction-warning" class="p-4 bg-red-100 border-4 border-red-600 text-red-800 font-bold space-y-1">
+                    <p class="text-lg uppercase">⚠️ YÊU CẦU NÂNG CẤP</p>
+                    <p class="text-sm">Bạn cần sở hữu ít nhất từ <strong class="underline">CẦN TRE trở lên</strong> mới có thể thực hiện chức năng Rút Tiền.</p>
+                </div>
+
                 <div id="bank-link-section" class="p-4 pixel-panel space-y-4">
                     <div class="flex justify-between items-center border-b-4 border-black pb-2">
                         <h3 class="text-xl text-black font-bold uppercase">NGÂN HÀNG</h3>
@@ -654,7 +660,7 @@
                         <div id="deposit-qr-screen" class="hidden p-4 pixel-panel space-y-3 text-center">
                             <h3 class="text-lg text-green-700 font-bold">QUÉT MÃ QR</h3>
                             <div class="bg-white p-2 w-52 h-52 mx-auto flex items-center justify-center border-4 border-black">
-                                <img id="deposit-qr-img" src="qr-bank.jpg" alt="qr-bank.jpg" class="max-w-full max-h-full image-rendering-pixelated">
+                                <img id="deposit-qr-img" src="qr-bank.jpg" alt="qr-bank.jpg" onerror="this.style.display='none'" class="max-w-full max-h-full image-rendering-pixelated">
                             </div>
                             <div class="text-left text-base bg-white p-3 border-4 border-black space-y-1.5 font-bold">
                                 <p>NH: <strong class="text-green-600">TCB</strong></p>
@@ -668,15 +674,24 @@
                         </div>
 
                         <!-- Form Rút -->
-                        <div class="p-4 pixel-panel space-y-3">
+                        <div id="withdraw-container-box" class="p-4 pixel-panel space-y-3">
                             <h3 class="text-xl text-black font-bold flex items-center gap-2 bg-red-200 p-2 border-2 border-black"><i data-lucide="arrow-up-circle" class="w-6 h-6"></i> RÚT TIỀN</h3>
-                            <p class="text-sm font-bold text-gray-700">Tối thiểu 50k. Phí 4%.</p>
-                            <input type="number" id="withdraw-amount" placeholder="Số tiền rút..." class="w-full px-3 py-3 text-lg pixel-input mt-2">
-                            <div class="bg-white p-3 text-base text-gray-800 font-bold space-y-1 border-4 border-black">
-                                <p>Phí 4%: <span id="withdraw-fee" class="text-red-600">0 đ</span></p>
-                                <p>Nhận: <span id="withdraw-actual" class="text-green-600 font-bold text-xl">0 đ</span></p>
+                            
+                            <div id="withdraw-fields-area">
+                                <p class="text-sm font-bold text-gray-700">Tối thiểu 50k. Phí 4%.</p>
+                                <input type="number" id="withdraw-amount" placeholder="Số tiền rút..." class="w-full px-3 py-3 text-lg pixel-input mt-2">
+                                <div class="bg-white p-3 text-base text-gray-800 font-bold space-y-1 border-4 border-black my-2">
+                                    <p>Phí 4%: <span id="withdraw-fee" class="text-red-600">0 đ</span></p>
+                                    <p>Nhận: <span id="withdraw-actual" class="text-green-600 font-bold text-xl">0 đ</span></p>
+                                </div>
+                                <button id="do-withdraw-btn" class="w-full py-3 font-bold pixel-btn btn-red text-xl">YÊU CẦU RÚT</button>
                             </div>
-                            <button id="do-withdraw-btn" class="w-full py-3 font-bold pixel-btn btn-red text-xl">YÊU CẦU RÚT</button>
+                            
+                            <!-- Box khoá rút tiền -->
+                            <div id="withdraw-locked-area" class="hidden p-3 bg-red-50 border-2 border-red-500 text-red-600 font-bold text-center">
+                                <i data-lucide="lock" class="w-8 h-8 mx-auto mb-2"></i>
+                                CHỨC NĂNG RÚT TIỀN ĐANG KHÓA.<br>VUI LÒNG NÂNG CẤP LÊN CẦN TRE ĐỂ MỞ KHÓA!
+                            </div>
                         </div>
                     </div>
                     
@@ -712,7 +727,6 @@
         </div>
     </div>
 
-    <!-- KHAI BÁO FIREBASE VÀ LOGIC GAME Ở ĐÂY -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
@@ -731,7 +745,7 @@
         const db = getDatabase(app);
 
         const ROD_TYPES = [
-            { id: 0, name: "Cần Gỗ", price: 0, min: 3000, max: 7000, limit: 3, desc: "Khúc củi khô nhặt bên hồ. Đơn giản nhưng hiệu quả.", color: "#8B5A2B" },
+            { id: 0, name: "Cần Gỗ", price: 0, min: 3000, max: 7000, limit: 4, desc: "Cần gỗ dùng thử. Chỉ sử dụng tối đa 4 lần duy nhất trong toàn bộ trò chơi.", color: "#8B5A2B" },
             { id: 1, name: "Cần Tre", price: 100000, min: 10000, max: 20000, limit: 3, desc: "Thân tre dẻo dai.", color: "#4CAF50" },
             { id: 2, name: "Cần Sắt", price: 500000, min: 20000, max: 30000, limit: 5, desc: "Ống nước sắt cứng cáp.", color: "#808080" },
             { id: 3, name: "Cần Vàng", price: 1000000, min: 30000, max: 40000, limit: 8, desc: "Đúc bằng vàng 9999.", color: "#FFD700" },
@@ -744,6 +758,17 @@
             { name: "Cá Trê", color: "#8B4513" }, { name: "Cá Mập Mini", color: "#708090" },
             { name: "Cá Vàng", color: "#FFD700" }
         ];
+
+        // --- CƠ CHẾ ANTI-CLONE (DEVICE FINGERPRINTING) ---
+        function getDeviceID() {
+            let id = localStorage.getItem('ft_device_id');
+            if (!id) {
+                // Tạo ID duy nhất cho trình duyệt này nếu chưa có
+                id = 'dev_' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+                localStorage.setItem('ft_device_id', id);
+            }
+            return id;
+        }
 
         let appState = {
             isAuthenticated: false,
@@ -764,7 +789,9 @@
             upgradesTriggered: [],
             networkLists: null,
             upline: null,
-            isFishing: false
+            isFishing: false,
+            isBanned: false,
+            deviceId: getDeviceID()
         };
 
         lucide.createIcons();
@@ -809,7 +836,6 @@
             document.getElementById('captcha-input').value = '';
         }
 
-        // Tạo tiền tệ định dạng Việt Nam đồng
         function formatMoney(num) {
             return parseInt(num).toLocaleString('vi-VN') + ' đ';
         }
@@ -819,7 +845,6 @@
             return `${now.getHours()}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate()}/${now.getMonth()+1}`;
         }
 
-        // Hàm hỗ trợ sinh mã giới thiệu ngẫu nhiên
         function generateRandomRefCode() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let code = 'FT';
@@ -829,41 +854,31 @@
             return code;
         }
 
-        // --- HỆ THỐNG PHÂN QUYỀN VÀ MẠNG LƯỚI BẠN BÈ ---
+        // --- MẠNG LƯỚI ---
         async function buildNetwork() {
             try {
                 const snapshot = await get(ref(db, 'users'));
                 if (!snapshot.exists()) return;
                 const allUsers = snapshot.val();
-                
                 const codeToKey = {};
-                const f1List = [];
-                const f2List = [];
-                const f3List = [];
+                const f1List = [], f2List = [], f3List = [];
 
-                // Tạo bảng tra cứu Code -> Số điện thoại (Key)
                 for (const [key, user] of Object.entries(allUsers)) {
                     if (user.referralCode) codeToKey[user.referralCode] = key;
                 }
 
                 const myCode = appState.referralCode;
-
-                // 1. Quét tìm danh sách F1, F2, F3 của mình để hiển thị
                 if (myCode) {
                     for (const [key, user] of Object.entries(allUsers)) {
                         if (user.referredBy === myCode) {
                             f1List.push(key);
-                            const f1Code = user.referralCode;
-                            if (f1Code) {
+                            if (user.referralCode) {
                                 for (const [key2, user2] of Object.entries(allUsers)) {
-                                    if (user2.referredBy === f1Code) {
+                                    if (user2.referredBy === user.referralCode) {
                                         f2List.push(key2);
-                                        const f2Code = user2.referralCode;
-                                        if (f2Code) {
+                                        if (user2.referralCode) {
                                             for (const [key3, user3] of Object.entries(allUsers)) {
-                                                if (user3.referredBy === f2Code) {
-                                                    f3List.push(key3);
-                                                }
+                                                if (user3.referredBy === user2.referralCode) f3List.push(key3);
                                             }
                                         }
                                     }
@@ -874,9 +889,8 @@
                 }
 
                 appState.networkLists = { f1: f1List, f2: f2List, f3: f3List };
-                
-                // 2. Tìm người giới thiệu (Upline) của mình để trả hoa hồng
                 appState.upline = { f1: null, f2: null, f3: null };
+
                 if (appState.referredBy) {
                     const f1Key = codeToKey[appState.referredBy];
                     if (f1Key) {
@@ -889,37 +903,25 @@
                                 const f2User = allUsers[f2Key];
                                 if (f2User && f2User.referredBy) {
                                     const f3Key = codeToKey[f2User.referredBy];
-                                    if (f3Key) {
-                                        appState.upline.f3 = f3Key;
-                                    }
+                                    if (f3Key) appState.upline.f3 = f3Key;
                                 }
                             }
                         }
                     }
                 }
-
                 renderNetworkLists();
             } catch (e) {
                 console.error("Lỗi tải danh sách bạn bè:", e);
-                document.getElementById('list-f1').innerHTML = '<span class="text-red-500">Lỗi kết nối</span>';
-                document.getElementById('list-f2').innerHTML = '<span class="text-red-500">Lỗi kết nối</span>';
-                document.getElementById('list-f3').innerHTML = '<span class="text-red-500">Lỗi kết nối</span>';
             }
         }
 
         function renderNetworkLists() {
             if (!appState.networkLists) return;
-            
-            const f1 = appState.networkLists.f1 || [];
-            const f2 = appState.networkLists.f2 || [];
-            const f3 = appState.networkLists.f3 || [];
-
+            const f1 = appState.networkLists.f1 || [], f2 = appState.networkLists.f2 || [], f3 = appState.networkLists.f3 || [];
             document.getElementById('count-f1').innerText = f1.length;
             document.getElementById('count-f2').innerText = f2.length;
             document.getElementById('count-f3').innerText = f3.length;
-
             const maskPhone = (key) => '0' + key.substring(2, key.length - 3) + '***';
-
             document.getElementById('list-f1').innerHTML = f1.length > 0 ? f1.map(p => `<div><span class="mr-2">👤</span>${maskPhone(p)}</div>`).join('') : '<span class="text-gray-400">Chưa có ai</span>';
             document.getElementById('list-f2').innerHTML = f2.length > 0 ? f2.map(p => `<div><span class="mr-2">👤</span>${maskPhone(p)}</div>`).join('') : '<span class="text-gray-400">Chưa có ai</span>';
             document.getElementById('list-f3').innerHTML = f3.length > 0 ? f3.map(p => `<div><span class="mr-2">👤</span>${maskPhone(p)}</div>`).join('') : '<span class="text-gray-400">Chưa có ai</span>';
@@ -934,52 +936,42 @@
                     userData.commission = (userData.commission || 0) + amount;
                     await set(userRef, userData);
                 }
-            } catch (e) {
-                console.error("Lỗi cộng hoa hồng cho upline:", userKey, e);
-            }
+            } catch (e) { console.error("Lỗi cộng hoa hồng:", e); }
         }
 
-        async function distributeCommission(type, value) {
+        async function distributeCommission(type, value, rodId = null) {
             if (!appState.upline) return;
-
             try {
                 if (type === 'fish') {
+                    // Nếu cần đi câu là Cần Gỗ (ID: 0), KHÔNG chia bất kì hoa hồng nào
+                    if (rodId === 0) {
+                        return;
+                    }
                     const amount = value;
-                    const f1Reward = Math.floor(amount * 0.25);
-                    const f2Reward = Math.floor(amount * 0.13);
-                    const f3Reward = Math.floor(amount * 0.08);
-
-                    if (appState.upline.f1 && f1Reward > 0) await addCommissionToUser(appState.upline.f1, f1Reward);
-                    if (appState.upline.f2 && f2Reward > 0) await addCommissionToUser(appState.upline.f2, f2Reward);
-                    if (appState.upline.f3 && f3Reward > 0) await addCommissionToUser(appState.upline.f3, f3Reward);
+                    if (appState.upline.f1) await addCommissionToUser(appState.upline.f1, Math.floor(amount * 0.25));
+                    if (appState.upline.f2) await addCommissionToUser(appState.upline.f2, Math.floor(amount * 0.13));
+                    if (appState.upline.f3) await addCommissionToUser(appState.upline.f3, Math.floor(amount * 0.08));
                 } else if (type === 'upgrade') {
-                    const rodId = value;
                     let bonus = 0;
-                    if (rodId === 1) bonus = 25000;       // Cần Tre
-                    else if (rodId === 2) bonus = 150000; // Cần Sắt
-                    else if (rodId === 3) bonus = 310000; // Cần Vàng
-                    else if (rodId === 4) bonus = 1000000;// Cần Kim Cương
+                    if (value === 1) bonus = 25000;
+                    else if (value === 2) bonus = 150000;
+                    else if (value === 3) bonus = 310000;
+                    else if (value === 4) bonus = 1000000;
 
                     if (appState.upline.f1 && bonus > 0) {
                         if (!appState.upgradesTriggered) appState.upgradesTriggered = [];
-                        
-                        // Kiểm tra xem đã trả thưởng cho loại cần này chưa (chỉ trả 1 lần cho F1)
-                        if (!appState.upgradesTriggered.includes(rodId)) {
-                            appState.upgradesTriggered.push(rodId);
+                        if (!appState.upgradesTriggered.includes(value)) {
+                            appState.upgradesTriggered.push(value);
                             await addCommissionToUser(appState.upline.f1, bonus);
                         }
                     }
                 }
-            } catch (e) {
-                console.error("Lỗi chia hoa hồng:", e);
-            }
+            } catch (e) { console.error("Lỗi chia hoa hồng:", e); }
         }
 
-        // --- ĐỒNG BỘ TRỰC TIẾP LÊN FIREBASE TRÊN KHUNG NHÌN CANVAS ---
         async function saveUserState() {
             if (!appState.userPhone) return;
             const fbKey = appState.userPhone.replace('+', ''); 
-            
             const userDataToSave = {
                 password: appState.password, 
                 balance: appState.balance,
@@ -993,19 +985,20 @@
                 fishingHistory: appState.fishingHistory || [],
                 referralCode: appState.referralCode || "",
                 referredBy: appState.referredBy || "",
-                upgradesTriggered: appState.upgradesTriggered || []
+                upgradesTriggered: appState.upgradesTriggered || [],
+                isBanned: appState.isBanned || false,
+                deviceId: appState.deviceId
             };
 
             try {
                 await set(ref(db, 'users/' + fbKey), userDataToSave);
                 updateUI();
             } catch (error) {
-                console.error("Firebase save error:", error);
                 showNotif("Lỗi đồng bộ máy chủ!", true);
             }
         }
 
-        // Đăng nhập / Đăng ký trực tiếp với Firebase
+        // --- LOGIN / REGISTER ---
         document.getElementById('auth-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const phone = document.getElementById('phone-input').value.replace(/\D/g, '');
@@ -1014,14 +1007,10 @@
 
             if(phone.length !== 9) return showNotif("Số điện thoại phải 9 số!", true);
             if(pass.length < 6) return showNotif("Mật khẩu ≥ 6 ký tự!", true);
-            if(captcha !== appState.captchaText) {
-                generateCaptcha();
-                return showNotif("Sai mã xác nhận!", true);
-            }
+            if(captcha !== appState.captchaText) { generateCaptcha(); return showNotif("Sai mã xác nhận!", true); }
 
             const formattedPhone = `+84${phone}`;
             const fbKey = formattedPhone.replace('+', '');
-            
             const btnSubmit = document.getElementById('submit-btn');
             const originalBtnText = btnSubmit.innerText;
             btnSubmit.innerText = "ĐANG XỬ LÝ...";
@@ -1032,20 +1021,26 @@
                 const userExists = snapshot.exists();
                 let userData = snapshot.val();
 
+                // Kiểm tra tài khoản có bị khóa không
+                if (userExists && userData.isBanned === true) {
+                    btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false;
+                    generateCaptcha();
+                    return showNotif("TÀI KHOẢN CỦA BẠN ĐÃ BỊ KHÓA!", true);
+                }
+
                 if(appState.authMode === 'register') {
                     const confPass = document.getElementById('confirm-password-input').value;
                     if(pass !== confPass) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Mật khẩu không khớp!", true); }
                     if(userExists) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("SĐT đã tồn tại!", true); }
                     
-                    const newReferralCode = generateRandomRefCode();
-                    const referralInput = document.getElementById('referral-input').value.trim();
-
                     userData = {
                         password: pass, balance: 20000, currentRod: 0, ownedRods: [0],
                         rodUsages: {}, commission: 0, friendsCount: 0, transactions: [], fishingHistory: [],
-                        referralCode: newReferralCode,
-                        referredBy: referralInput,
-                        upgradesTriggered: []
+                        referralCode: generateRandomRefCode(),
+                        referredBy: document.getElementById('referral-input').value.trim(),
+                        upgradesTriggered: [],
+                        isBanned: false,
+                        deviceId: appState.deviceId // Gắn ID thiết bị
                     };
                     await set(ref(db, 'users/' + fbKey), userData);
                     loginUser(formattedPhone, userData);
@@ -1054,13 +1049,14 @@
                     if(!userExists) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Tài khoản không tồn tại!", true); }
                     if(userData.password !== pass) { btnSubmit.innerText = originalBtnText; btnSubmit.disabled = false; return showNotif("Sai mật khẩu!", true); }
                     
-                    // Tạo mã giới thiệu nếu tài khoản cũ chưa có
                     if (!userData.referralCode) {
                         userData.referralCode = generateRandomRefCode();
                         await set(ref(db, `users/${fbKey}/referralCode`), userData.referralCode);
                     }
-                    if (!userData.upgradesTriggered) {
-                        userData.upgradesTriggered = [];
+                    // Cập nhật lại device ID nếu đăng nhập trên máy mới
+                    if (userData.deviceId !== appState.deviceId) {
+                        userData.deviceId = appState.deviceId;
+                        await set(ref(db, `users/${fbKey}/deviceId`), appState.deviceId);
                     }
                     
                     loginUser(formattedPhone, userData);
@@ -1069,7 +1065,6 @@
             } catch (error) {
                 showNotif("Lỗi kết nối máy chủ!", true);
             }
-            
             btnSubmit.innerText = originalBtnText;
             btnSubmit.disabled = false;
         });
@@ -1080,15 +1075,11 @@
             if(!appState.fishingHistory) appState.fishingHistory = [];
             if(!appState.rodUsages) appState.rodUsages = {}; 
             if(!appState.upgradesTriggered) appState.upgradesTriggered = [];
-            if(!appState.referralCode) {
-                appState.referralCode = generateRandomRefCode();
-            }
             
             localStorage.setItem('fishing_tycoon_session', phone);
             
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-screen').classList.remove('hidden');
-            
             document.getElementById('phone-input').value = '';
             document.getElementById('password-input').value = '';
             document.getElementById('confirm-password-input').value = '';
@@ -1096,30 +1087,24 @@
             
             initFallingLeaves();
             updateUI();
-            
-            // Xây dựng sơ đồ mạng lưới Bạn Bè sau khi đăng nhập
             buildNetwork();
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
             generateCaptcha();
 
-            // ====== XỬ LÝ URL GIỚI THIỆU ======
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
 
             if (refParam) {
                 appState.authMode = 'register';
                 document.getElementById('register-fields').classList.remove('hidden');
-                
                 const btn = document.getElementById('submit-btn');
                 btn.innerText = 'ĐĂNG KÝ NGAY';
                 btn.className = 'w-full mt-4 py-3 text-xl font-bold pixel-btn btn-yellow';
                 document.getElementById('toggle-auth-mode').innerText = 'Đã có tài khoản? Đăng nhập';
-
                 document.getElementById('referral-input').value = refParam;
             }
-            // =============================================================
 
             const sessionPhone = localStorage.getItem('fishing_tycoon_session');
             if(sessionPhone) {
@@ -1128,24 +1113,23 @@
                     const snapshot = await get(child(ref(db), `users/${fbKey}`));
                     if (snapshot.exists()) {
                         let userData = snapshot.val();
-                        if (!userData.referralCode) {
-                            userData.referralCode = generateRandomRefCode();
-                            await set(ref(db, `users/${fbKey}/referralCode`), userData.referralCode);
+                        if (userData.isBanned) {
+                            localStorage.removeItem('fishing_tycoon_session');
+                            return showNotif("Tài khoản của bạn đã bị khóa!", true);
                         }
-                        if (!userData.upgradesTriggered) {
-                            userData.upgradesTriggered = [];
+                        if (userData.deviceId !== appState.deviceId) {
+                            userData.deviceId = appState.deviceId;
+                            await set(ref(db, `users/${fbKey}/deviceId`), appState.deviceId);
                         }
                         loginUser(sessionPhone, userData);
                     } else {
                         localStorage.removeItem('fishing_tycoon_session');
                     }
-                } catch(e) {
-                    console.error("Lỗi tự động đăng nhập:", e);
-                }
+                } catch(e) { }
             }
         });
 
-        // ---------------- RENDER UI ----------------
+        // --- GIAO DIỆN ---
         function updateUI() {
             if (!appState.isAuthenticated) return;
 
@@ -1157,8 +1141,14 @@
 
             document.getElementById('current-rod-name').innerText = rod.name;
             document.getElementById('fishing-limit-display').innerText = `${currentRodUsage} / ${rod.limit}`;
-            document.getElementById('rod-income-range').innerText = `${formatMoney(rod.min)} - ${formatMoney(rod.max)}`;
-            document.getElementById('rod-daily-limit').innerText = `${rod.limit} lượt/ngày`;
+            
+            if (appState.currentRod === 0) {
+                document.getElementById('rod-income-range').innerText = `${formatMoney(rod.min)} - ${formatMoney(rod.max)}`;
+                document.getElementById('rod-daily-limit').innerText = `${rod.limit} lần duy nhất`;
+            } else {
+                document.getElementById('rod-income-range').innerText = `${formatMoney(rod.min)} - ${formatMoney(rod.max)}`;
+                document.getElementById('rod-daily-limit').innerText = `${rod.limit} lượt/ngày`;
+            }
             
             const actionBtn = document.getElementById('action-fish-btn');
             if (appState.isFishing) {
@@ -1166,10 +1156,22 @@
                 actionBtn.innerHTML = `ĐANG CÂU...`;
             } else if (currentRodUsage >= rod.limit) {
                 actionBtn.className = "w-full py-4 text-2xl font-bold flex justify-center items-center gap-2 pixel-btn btn-red";
-                actionBtn.innerHTML = `HẾT LƯỢT CỦA CẦN NÀY`;
+                actionBtn.innerHTML = appState.currentRod === 0 ? `HẾT LƯỢT DÙNG THỬ VĨNH VIỄN` : `HẾT LƯỢT CỦA CẦN NÀY`;
             } else {
                 actionBtn.className = "w-full py-4 text-2xl font-bold flex justify-center items-center gap-2 pixel-btn btn-yellow";
                 actionBtn.innerHTML = `QUĂNG CẦN! <i data-lucide="arrow-right" class="w-6 h-6"></i>`;
+            }
+
+            // --- KIỂM TRA ĐIỀU KIỆN RÚT TIỀN (Sở hữu từ Cần Tre ID 1 trở lên) ---
+            const hasTreOrHigher = appState.ownedRods.some(id => id >= 1);
+            if (hasTreOrHigher) {
+                document.getElementById('withdrawal-restriction-warning').classList.add('hidden');
+                document.getElementById('withdraw-fields-area').classList.remove('hidden');
+                document.getElementById('withdraw-locked-area').classList.add('hidden');
+            } else {
+                document.getElementById('withdrawal-restriction-warning').classList.remove('hidden');
+                document.getElementById('withdraw-fields-area').classList.add('hidden');
+                document.getElementById('withdraw-locked-area').classList.remove('hidden');
             }
 
             renderSVGScene();
@@ -1195,7 +1197,6 @@
                 document.getElementById('bank-info-display').classList.remove('hidden');
                 document.getElementById('edit-bank-btn').classList.remove('hidden');
                 document.getElementById('bank-action-section').classList.remove('hidden');
-                
                 document.getElementById('lbl-bank-name').innerText = appState.bankInfo.name;
                 document.getElementById('lbl-bank-acc').innerText = appState.bankInfo.acc;
                 document.getElementById('lbl-bank-user').innerText = appState.bankInfo.user;
@@ -1216,7 +1217,6 @@
                 list.innerHTML = '<p class="text-base text-gray-500 text-center font-bold">CHƯA CÓ CÁ.</p>';
                 return;
             }
-
             [...appState.fishingHistory].reverse().slice(0, 30).forEach(item => {
                 list.innerHTML += `
                     <div class="flex justify-between items-center bg-white p-3 border-4 border-black text-base font-bold shadow-[4px_4px_0_0_#000]">
@@ -1248,8 +1248,6 @@
                     const btnClass = canBuy ? 'btn-green' : 'pixel-btn-disabled';
                     btnHtml = `<button onclick="window.buyRod(${idx})" class="w-full md:w-36 py-3 text-lg font-bold pixel-btn ${btnClass} uppercase">${formatMoney(rod.price)}</button>`;
                 }
-
-                const rodUsage = appState.rodUsages[idx] || 0;
                 const el = document.createElement('div');
                 el.className = `p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-4 border-black shadow-[6px_6px_0_0_#000] ${isActive ? 'bg-yellow-100' : 'bg-white'}`;
                 el.innerHTML = `
@@ -1261,10 +1259,6 @@
                             ${isOwned ? '<span class="px-2 py-1 bg-green-200 border-2 border-black text-sm text-green-800 font-bold uppercase">SỞ HỮU</span>' : ''}
                         </div>
                         <p class="text-base text-gray-700 font-bold">${rod.desc}</p>
-                        <div class="grid grid-cols-2 gap-3 max-w-xs text-sm font-bold mt-2">
-                            <span class="bg-gray-100 px-2 py-1 border-2 border-black"><span class="text-gray-600">Lãi:</span> <strong class="text-green-600">${rod.min/1000}k-${rod.max/1000}k</strong></span>
-                            <span class="bg-gray-100 px-2 py-1 border-2 border-black"><span class="text-gray-600">Lượt riêng:</span> <strong class="text-red-600">${rodUsage}/${rod.limit}</strong></span>
-                        </div>
                     </div>
                     <div class="w-full md:w-auto">${btnHtml}</div>
                 `;
@@ -1279,7 +1273,6 @@
                 list.innerHTML = '<p class="text-base text-gray-500 text-center font-bold uppercase">Chưa có giao dịch.</p>';
                 return;
             }
-            
             [...appState.transactions].reverse().forEach(tx => {
                 const isNạp = tx.type === 'NẠP';
                 let statusColor = 'text-yellow-600';
@@ -1290,7 +1283,7 @@
                     <div class="flex justify-between items-center bg-white p-3 border-4 border-black text-base font-bold shadow-[4px_4px_0_0_#000]">
                         <div>
                             <span class="font-extrabold px-2 py-1 border-2 border-black uppercase ${isNạp ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${tx.type}</span>
-                            <span class="text-black ml-2 font-bold">${formatMoney(tx.amount)} ${!isNạp ? '<span class="text-xs text-gray-500 font-normal block sm:inline">(Thực nhận)</span>' : ''}</span>
+                            <span class="text-black ml-2 font-bold">${formatMoney(tx.amount)}</span>
                         </div>
                         <div class="text-right">
                             <p class="${statusColor} font-bold uppercase">${tx.status}</p>
@@ -1305,22 +1298,14 @@
             const rodSvg = document.getElementById('rod-svg');
             const c = appState.currentRod;
             let html = '';
-
-            if(c === 0) {
-                html = `<polyline points="70,62 90,46 110,41" fill="none" stroke="#8B5A2B" stroke-width="6"/><polyline points="68,64 88,48 108,43" fill="none" stroke="#A16207" stroke-width="2"/><line x1="110" y1="41" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
-            } else if(c === 1) {
-                html = `<polyline points="70,62 95,36 120,31" fill="none" stroke="#4CAF50" stroke-width="6"/><rect x="85" y="46" width="4" height="6" fill="#2E7D32"/><rect x="105" y="33" width="4" height="6" fill="#2E7D32"/><line x1="120" y1="31" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
-            } else if(c === 2) {
-                html = `<polyline points="70,62 100,26 130,21" fill="none" stroke="#808080" stroke-width="8"/><polyline points="69,63 99,27 129,22" fill="none" stroke="#D1D5DB" stroke-width="2"/><line x1="130" y1="21" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
-            } else if(c === 3) {
-                html = `<polyline points="70,62 105,21 135,16" fill="none" stroke="#FFD700" stroke-width="8"/><polyline points="70,62 105,21 135,16" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="8 8"/><line x1="135" y1="16" x2="160" y2="120" stroke="#FFEB3B" stroke-width="2"/>`;
-            } else if(c === 4) {
-                html = `<polyline points="70,62 110,16 145,11" fill="none" stroke="#00E5FF" stroke-width="8"/><polyline points="70,62 110,16 145,11" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="10 10"/><line x1="145" y1="11" x2="160" y2="120" stroke="#E0F7FA" stroke-width="2"/>`;
-            }
+            if(c === 0) html = `<polyline points="70,62 90,46 110,41" fill="none" stroke="#8B5A2B" stroke-width="6"/><polyline points="68,64 88,48 108,43" fill="none" stroke="#A16207" stroke-width="2"/><line x1="110" y1="41" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
+            else if(c === 1) html = `<polyline points="70,62 95,36 120,31" fill="none" stroke="#4CAF50" stroke-width="6"/><rect x="85" y="46" width="4" height="6" fill="#2E7D32"/><rect x="105" y="33" width="4" height="6" fill="#2E7D32"/><line x1="120" y1="31" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
+            else if(c === 2) html = `<polyline points="70,62 100,26 130,21" fill="none" stroke="#808080" stroke-width="8"/><polyline points="69,63 99,27 129,22" fill="none" stroke="#D1D5DB" stroke-width="2"/><line x1="130" y1="21" x2="160" y2="120" stroke="#FFFFFF" stroke-width="2"/>`;
+            else if(c === 3) html = `<polyline points="70,62 105,21 135,16" fill="none" stroke="#FFD700" stroke-width="8"/><polyline points="70,62 105,21 135,16" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="8 8"/><line x1="135" y1="16" x2="160" y2="120" stroke="#FFEB3B" stroke-width="2"/>`;
+            else if(c === 4) html = `<polyline points="70,62 110,16 145,11" fill="none" stroke="#00E5FF" stroke-width="8"/><polyline points="70,62 110,16 145,11" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="10 10"/><line x1="145" y1="11" x2="160" y2="120" stroke="#E0F7FA" stroke-width="2"/>`;
             rodSvg.innerHTML = html;
         }
 
-        // Module event binding cho nút (Bởi vì <script type="module"> cách ly scope)
         window.buyRod = async function(idx) {
             const rod = ROD_TYPES[idx];
             if(appState.ownedRods.includes(idx)) {
@@ -1329,54 +1314,39 @@
                 saveUserState();
             } else {
                 if(appState.balance < rod.price) return showNotif("Không đủ tiền!", true);
-                
                 appState.balance -= rod.price;
                 appState.ownedRods.push(idx);
                 appState.currentRod = idx;
                 if(!appState.rodUsages) appState.rodUsages = {};
                 appState.rodUsages[idx] = 0;
                 showNotif(`Mua thành công ${rod.name}!`);
-                
-                // Trả hoa hồng nâng cấp cho Upline F1
                 await distributeCommission('upgrade', idx);
                 saveUserState();
             }
         };
 
-        // Gắn sự kiện tab
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tab-btn').forEach(b => {
                     b.classList.remove('active', 'text-black', 'bg-yellow-400', 'border-t-[4px]', 'border-black');
-                    b.classList.add('text-gray-600');
-                    b.style.boxShadow = 'none';
-                    b.style.transform = 'none';
+                    b.classList.add('text-gray-600'); b.style.boxShadow = 'none'; b.style.transform = 'none';
                 });
                 const targetBtn = e.currentTarget;
                 targetBtn.classList.add('active', 'text-black', 'bg-yellow-400', 'border-t-[4px]', 'border-black');
                 targetBtn.classList.remove('text-gray-600');
                 targetBtn.style.transform = 'translateY(-4px)';
                 targetBtn.style.boxShadow = '4px 4px 0px rgba(0,0,0,1)';
-
                 const targetId = targetBtn.getAttribute('data-target');
                 document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
                 document.getElementById(targetId).classList.remove('hidden');
-
-                const bubbles = [document.getElementById('floating-telegram'), document.getElementById('floating-support')];
-                bubbles.forEach(b => {
-                    if (targetId === 'tab-game') b.classList.remove('hidden');
-                    else b.classList.add('hidden');
-                });
                 updateUI();
             });
         });
 
-        // ---------------- GAME LOGIC BINDINGS ----------------
         document.getElementById('toggle-auth-mode').addEventListener('click', () => {
             appState.authMode = appState.authMode === 'login' ? 'register' : 'login';
             const isReg = appState.authMode === 'register';
             document.getElementById('register-fields').classList.toggle('hidden', !isReg);
-            
             const btn = document.getElementById('submit-btn');
             btn.innerText = isReg ? 'ĐĂNG KÝ NGAY' : 'ĐĂNG NHẬP';
             btn.className = `w-full mt-4 py-3 text-xl font-bold pixel-btn ${isReg ? 'btn-yellow' : 'btn-blue'}`;
@@ -1397,7 +1367,16 @@
             if(appState.isFishing) return;
             const rod = ROD_TYPES[appState.currentRod];
             const currentUsage = appState.rodUsages[appState.currentRod] || 0;
-            if(currentUsage >= rod.limit) return; 
+            
+            // Chặn tuyệt đối nếu đã dùng hết lượt vĩnh viễn (đối với Cần Gỗ) hoặc hết lượt ngày (cần khác)
+            if(currentUsage >= rod.limit) {
+                if (appState.currentRod === 0) {
+                    showNotif("CẦN GỖ CHỈ ĐƯỢC CÂU TỐI ĐA 4 LẦN DUY NHẤT!", true);
+                } else {
+                    showNotif("Hết lượt hôm nay đối với cần này!", true);
+                }
+                return; 
+            }
 
             appState.isFishing = true;
             document.getElementById('float-idle').classList.add('hidden');
@@ -1406,10 +1385,7 @@
             updateUI();
 
             setTimeout(async () => {
-                // Thuật toán giảm mức thưởng thực nhận (Có chốt chặn an toàn tuyệt đối)
-                let actualMin = rod.min;
-                let actualMax = rod.max;
-                
+                let actualMin = rod.min; let actualMax = rod.max;
                 if (rod.min === 3000 && rod.max === 7000) { actualMax = 4000; }
                 else if (rod.min === 10000 && rod.max === 20000) { actualMax = 13000; }
                 else if (rod.min === 20000 && rod.max === 30000) { actualMax = 24000; }
@@ -1417,11 +1393,7 @@
                 else if (rod.min === 80000 && rod.max === 100000) { actualMax = 87000; }
 
                 let reward = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
-                
-                // Chốt chặn an toàn: Đảm bảo số tiền tuyệt đối không bao giờ vượt qua Max đã thiết lập
-                if (reward > actualMax) {
-                    reward = actualMax;
-                }
+                if (reward > actualMax) reward = actualMax;
 
                 const fish = PIXEL_FISHES[Math.floor(Math.random() * PIXEL_FISHES.length)];
                 const weight = (Math.random() * 4 + 0.5).toFixed(1);
@@ -1446,9 +1418,8 @@
                 
                 document.getElementById('fishing-result-popup').classList.remove('hidden');
                 
-                // Cập nhật chia Hoa hồng câu cá
-                await distributeCommission('fish', reward);
-                
+                // Phân phối hoa hồng (Hàm distributeCommission sẽ tự động bỏ qua nếu là cần Gỗ)
+                await distributeCommission('fish', reward, appState.currentRod);
                 saveUserState();
             }, 3000);
         });
@@ -1517,6 +1488,12 @@
         });
 
         document.getElementById('do-withdraw-btn').addEventListener('click', () => {
+            // Chặn cứng logic rút tiền nếu chưa nâng cấp tối thiểu Cần Tre (ID 1)
+            const hasTreOrHigher = appState.ownedRods.some(id => id >= 1);
+            if (!hasTreOrHigher) {
+                return showNotif("BẠN PHẢI NÂNG CẤP LÊN CẦN TRE TRỞ LÊN MỚI ĐƯỢC RÚT TIỀN!", true);
+            }
+
             const amt = parseInt(withdrawInput.value);
             if(isNaN(amt) || amt < 50000) return showNotif("Rút tối thiểu 50.000đ!", true);
             if(amt > appState.balance) return showNotif("Số dư không đủ!", true);
@@ -1543,7 +1520,6 @@
         document.getElementById('copy-code-btn').addEventListener('click', () => { copyToClipboard(document.getElementById('ref-code-display').innerText, "Đã copy mã giới thiệu!"); });
         document.getElementById('copy-link-btn').addEventListener('click', () => { copyToClipboard(document.getElementById('ref-link-display').value, "Đã copy link giới thiệu!"); });
 
-        // ---------------- DRAGGABLE FLOATING BUBBLES LOGIC ----------------
         function makeBubbleDraggable(el, targetUrl) {
             let startX = 0, startY = 0, initialLeft = 0, initialTop = 0, isMoving = false;
             el.addEventListener('mousedown', (e) => {
@@ -1582,7 +1558,6 @@
         }
         makeBubbleDraggable(document.getElementById('floating-telegram'), 'https://t.me/FishingTycoonGroup');
         makeBubbleDraggable(document.getElementById('floating-support'), 'https://t.me/FishingTycoon');
-
     </script>
 </body>
 </html>

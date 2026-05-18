@@ -553,10 +553,10 @@
                             <li><span class="text-red-600">F3: 8%</span> thu nhập đi câu mỗi ngày!</li>
                             <li>Nhận thưởng nóng khi F1 nâng cấp cần câu:</li>
                             <ul class="pl-5 list-circle">
-                                <li>Cần Tre: <span class="text-green-600">+40.000 đ</span></li>
-                                <li>Cần Sắt: <span class="text-green-600">+170.000 đ</span></li>
-                                <li>Cần Vàng: <span class="text-green-600">+400.000 đ</span></li>
-                                <li>Cần Kim Cương: <span class="text-green-600">+1.500.000 đ</span></li>
+                                <li>Cần Tre: <span class="text-green-600">+25.000 đ</span></li>
+                                <li>Cần Sắt: <span class="text-green-600">+150.000 đ</span></li>
+                                <li>Cần Vàng: <span class="text-green-600">+310.000 đ</span></li>
+                                <li>Cần Kim Cương: <span class="text-green-600">+1.000.000 đ</span></li>
                             </ul>
                             <li class="text-xs text-blue-700 italic mt-1">*Thưởng nâng cấp chỉ cộng 1 lần duy nhất cho mỗi loại cần của mỗi F1.</li>
                         </ul>
@@ -955,10 +955,10 @@
                 } else if (type === 'upgrade') {
                     const rodId = value;
                     let bonus = 0;
-                    if (rodId === 1) bonus = 40000;       // Cần Tre
-                    else if (rodId === 2) bonus = 170000; // Cần Sắt
-                    else if (rodId === 3) bonus = 400000; // Cần Vàng
-                    else if (rodId === 4) bonus = 1500000;// Cần Kim Cương
+                    if (rodId === 1) bonus = 25000;       // Cần Tre
+                    else if (rodId === 2) bonus = 150000; // Cần Sắt
+                    else if (rodId === 3) bonus = 310000; // Cần Vàng
+                    else if (rodId === 4) bonus = 1000000;// Cần Kim Cương
 
                     if (appState.upline.f1 && bonus > 0) {
                         if (!appState.upgradesTriggered) appState.upgradesTriggered = [];

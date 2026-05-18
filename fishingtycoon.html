@@ -893,6 +893,26 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             generateCaptcha();
+
+            // ====== PHẦN CODE ĐƯỢC THÊM MỚI ĐỂ XỬ LÝ URL GIỚI THIỆU ======
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+
+            if (refParam) {
+                // Tự động chuyển qua tab đăng ký
+                appState.authMode = 'register';
+                document.getElementById('register-fields').classList.remove('hidden');
+                
+                const btn = document.getElementById('submit-btn');
+                btn.innerText = 'ĐĂNG KÝ NGAY';
+                btn.className = 'w-full mt-4 py-3 text-xl font-bold pixel-btn btn-yellow';
+                document.getElementById('toggle-auth-mode').innerText = 'Đã có tài khoản? Đăng nhập';
+
+                // Tự động điền mã giới thiệu
+                document.getElementById('referral-input').value = refParam;
+            }
+            // =============================================================
+
             const sessionPhone = localStorage.getItem('fishing_tycoon_session');
             if(sessionPhone) {
                 const fbKey = sessionPhone.replace('+', '');

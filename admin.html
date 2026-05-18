@@ -72,14 +72,14 @@
                     <p class="text-xs text-gray-400 font-bold mb-2 uppercase">Tài khoản</p>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                        <input type="text" id="admin-username" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin" value="admin">
+                        <input type="text" id="admin-username" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Tài khoản" value="cuong17112k">
                     </div>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400 font-bold mb-2 uppercase">Mật khẩu</p>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                        <input type="password" id="admin-password" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Nhập: admin123" value="admin123">
+                        <input type="password" id="admin-password" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-yellow-500 font-bold text-white transition-colors" placeholder="Mật khẩu" value="cuong1711">
                     </div>
                 </div>
 
@@ -90,7 +90,7 @@
                     </button>
                     <div id="config-url-section" class="hidden mt-2 animate-fade">
                         <p class="text-[10px] text-gray-400 mb-1">Database URL (Bắt đầu với https://):</p>
-                        <input type="text" id="admin-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-lg py-2 px-3 text-xs text-gray-300 focus:border-yellow-500 outline-none" placeholder="https://fishing-tycoon-default-rtdb.firebaseio.com">
+                        <input type="text" id="admin-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-lg py-2 px-3 text-xs text-gray-300 focus:border-yellow-500 outline-none" placeholder="https://fishingtycoon-c2fc9-default-rtdb.asia-southeast1.firebasedatabase.app">
                     </div>
                 </div>
             </div>
@@ -262,7 +262,7 @@
                 <i class="fa-solid fa-xmark text-lg text-gray-500 cursor-pointer" onclick="window.closeConfigModal()"></i>
             </div>
             <p class="text-xs text-gray-400 mb-4">Hãy nhập đúng địa chỉ Realtime Database URL của bạn để hệ thống đồng bộ thời gian thực.</p>
-            <input type="text" id="popup-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:border-yellow-500 outline-none mb-4" placeholder="https://xxxxxx-default-rtdb.firebaseio.com">
+            <input type="text" id="popup-database-url" class="w-full bg-[#0B0F1A] border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:border-yellow-500 outline-none mb-4" placeholder="https://fishingtycoon-c2fc9-default-rtdb.asia-southeast1.firebasedatabase.app">
             <div class="flex gap-3">
                 <button onclick="window.closeConfigModal()" class="flex-1 bg-gray-800 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-gray-700 transition-colors">Hủy</button>
                 <button onclick="window.saveConfigUrl()" class="flex-1 bg-yellow-500 text-gray-900 font-bold py-2.5 rounded-lg text-xs hover:bg-yellow-400 transition-colors">Lưu & Tải lại</button>
@@ -304,15 +304,23 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Tải thiết lập database URL đã lưu trong localStorage hoặc dùng mặc định
-        const savedDatabaseUrl = localStorage.getItem('fishing_tycoon_db_url') || "https://fishing-tycoon-default-rtdb.firebaseio.com";
+        // Tải cấu hình URL mới hoặc lưu từ trước, mặc định là database của bạn
+        const defaultDatabaseUrl = "https://fishingtycoon-c2fc9-default-rtdb.asia-southeast1.firebasedatabase.app";
+        const savedDatabaseUrl = localStorage.getItem('fishing_tycoon_db_url') || defaultDatabaseUrl;
         
         // Cập nhật giá trị vào Input hiển thị
         document.getElementById('admin-database-url').value = savedDatabaseUrl;
         document.getElementById('popup-database-url').value = savedDatabaseUrl;
 
+        // Cấu hình Firebase đầy đủ lấy từ thông tin dự án mới của bạn
         const firebaseConfig = {
-            databaseURL: savedDatabaseUrl
+            apiKey: "AIzaSyABaaEBwnL65YiitN5w5_BPAE4QQDfo-5s",
+            authDomain: "fishingtycoon-c2fc9.firebaseapp.com",
+            databaseURL: savedDatabaseUrl,
+            projectId: "fishingtycoon-c2fc9",
+            storageBucket: "fishingtycoon-c2fc9.appspot.com",
+            messagingSenderId: "792471669858",
+            appId: "1:792471669858:web:117186ceaa139bfd3a953b"
         };
 
         // Khởi tạo Firebase
@@ -457,7 +465,7 @@
             location.reload();
         };
 
-        // Realtime Real Estate sync
+        // Đồng bộ hóa dữ liệu thời gian thực
         const initFirebaseListener = () => {
             const badge = document.getElementById('db-status-badge');
             if(!db) {
@@ -470,7 +478,6 @@
             badge.innerHTML = `<i class="fa-solid fa-circle text-[8px] text-blue-500 animate-pulse"></i> ĐANG KẾT NỐI...`;
 
             // BỘ ĐẾM THỜI GIAN GIỚI HẠN (6 GIÂY TIMEOUT):
-            // Nếu quá 6 giây vẫn chưa kết nối thành công, hệ thống tự động nhảy sang Demo Mode để giao diện không bị kẹt.
             const connectionTimeout = setTimeout(() => {
                 if (!connectionSuccess) {
                     console.warn("Firebase connection timeout. Falling back to Demo Mode.");
